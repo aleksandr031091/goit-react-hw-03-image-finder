@@ -48,7 +48,6 @@ class App extends Component {
   onSubmit = (query) => {
     this.setState({ query });
     API.GetImages({ query }).then((response) => {
-      console.log("response", response);
       this.setState({ images: response.data.hits });
     });
   };

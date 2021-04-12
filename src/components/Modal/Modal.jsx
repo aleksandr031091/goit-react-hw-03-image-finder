@@ -1,7 +1,9 @@
+import scss from "./Modal.module.scss";
+
 const Modal = ({ largeImage, closeModal }) => {
   return (
-    <div className="Overlay" onClick={closeModal}>
-      <div className="Modal">
+    <div className={scss.Overlay} onClick={closeModal}>
+      <div className={scss.Modal}>
         <img src={largeImage} alt="" />
       </div>
     </div>
