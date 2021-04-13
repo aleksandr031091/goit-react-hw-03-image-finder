@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Component } from "react";
 
 import scss from "./Searchbar.module.scss";
@@ -19,14 +20,14 @@ class Searchbar extends Component {
 
   render() {
     return (
-      <header className="Searchbar">
-        <form className="SearchForm" onSubmit={this.handleSubmit}>
-          <button type="submit" className="SearchForm-button">
-            <span className="SearchForm-button-label">Search</span>
+      <header className={scss.searchbar}>
+        <form className={scss.searchForm} onSubmit={this.handleSubmit}>
+          <button type="submit" className={scss.searchFormButton}>
+            <span className={scss.searchFormButtonLabel}>Search</span>
           </button>
 
           <input
-            className="SearchForm-input"
+            className={scss.searchFormInput}
             type="text"
             value={this.state.text}
             autoComplete="off"
@@ -41,3 +42,7 @@ class Searchbar extends Component {
 }
 
 export default Searchbar;
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

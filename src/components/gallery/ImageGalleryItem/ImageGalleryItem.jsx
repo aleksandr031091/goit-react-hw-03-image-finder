@@ -1,12 +1,14 @@
+import scss from "./imageGalleryItem.module.scss";
+
 const ImageGalleryItem = ({ image, openModal, largeImage }) => {
   const { webformatURL } = image;
   return (
     <li
-      className="ImageGalleryItem"
+      className={scss.ImageGalleryItem}
       id={image.id}
       onClick={() => openModal(largeImage)}
     >
-      <img src={webformatURL} alt="" className="ImageGalleryItem-image" />
+      <img src={webformatURL} alt="" className={scss.ImageGalleryItemImage} />
     </li>
   );
 };

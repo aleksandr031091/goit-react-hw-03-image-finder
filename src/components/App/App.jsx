@@ -1,9 +1,10 @@
 import { Component } from "react";
+import scss from "./App.module.scss";
 
 import API from "../utils/imageApi";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../gallery/ImageGallery";
-import Loader from "../Loader";
+import LoaderImages from "../Loader";
 import BottonLoadMore from "../Button";
 import Modal from "../Modal";
 
@@ -13,17 +14,22 @@ class App extends Component {
     query: "",
     page: 1,
     isOpenModal: false,
+    isLoading: false,
+    error: "",
   };
 
-  componentDidMount() {
-    const { query, page } = this.state;
-    this.onSubmit(query, page);
-  }
-
   componentDidUpdate(prevProps, prevState) {
-    const { page } = this.state.page;
+    const { page, query, images } = this.state;
 
     if (prevState.page !== page) {
+      API.GetImages({ query, page }).then((response) => {
+        this.setState((prevState) => ({
+          images: [...prevState.images, ...response.data.hits],
+        }));
+      });
+    }
+
+    if (prevState.images !== images && prevState.images.length !== 0) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: "smooth",
@@ -46,33 +52,32 @@ class App extends Component {
   ////////////////////////////////////// modal //////////////////////////////////////////
 
   onSubmit = (query) => {
-    this.setState({ query });
-    API.GetImages({ query }).then((response) => {
-      this.setState({ images: response.data.hits });
-    });
+    this.setState({ query, isLoading: true });
+    API.GetImages({ query })
+      .then((response) => {
+        this.setState({ images: response.data.hits });
+      })
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   addPage = () => {
-    const { query, page } = this.state;
-    API.GetImages(query, page + 1).then((response) => {
-      this.setState((prevState) => ({
-        page: prevState.page + 1,
-        images: [...prevState.images, ...response.data.hits],
-      }));
-    });
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
   };
 
   render() {
-    const { images, largeImage, isOpenModal } = this.state;
+    const { images, largeImage, isOpenModal, isLoading } = this.state;
     return (
-      <>
+      <div className={scss.App}>
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery images={images} openModal={this.openModal} />
+        {isLoading && <LoaderImages />}
         {images.length > 0 && <BottonLoadMore addPage={this.addPage} />}
         {isOpenModal && (
           <Modal largeImage={largeImage} closeModal={this.closeModal} />
         )}
-      </>
+      </div>
     );
   }
 }
